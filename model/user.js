@@ -31,6 +31,8 @@ const UserSchema = new mongoose.Schema({
       required: [true, "Please provide a password!"],
       unique: false,
     },
+    roles: [{ type: 'String' }],
+    isVerified: { type: Boolean, default: false },
   });
 // Export the model
 module.exports = mongoose.model('User', UserSchema);
