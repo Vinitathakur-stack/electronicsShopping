@@ -35,6 +35,7 @@ app.use((req, res, next) => {
 // body parser configuration
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+app.use('/uploads', express.static('./uploads'));
 // app.use(express.urlencoded());
 // app.use(express.json());
 
