@@ -9,6 +9,7 @@ const user_controller = require('../controllers/user');
 
 // routes
 router.post('/register',upload.none(),user_controller.user_register);
+router.post('/confirmation',upload.none(), user_controller.confirmationPost);
 router.post('/login',user_controller.user_login);
 
 module.exports = router;

@@ -2,8 +2,8 @@ const express = require('express');
 const router = express.Router();
 const multer = require('multer');
 //const upload = multer();
-var VerifyToken = require('../VerifyToken');
-const upload_controller = require('../uploadFiles');
+var VerifyToken = require('../middleware/VerifyToken');
+const upload_controller = require('../middleware/uploadFiles');
 // include product controller
 const product_controller = require('../controllers/product');
 

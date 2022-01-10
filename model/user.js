@@ -2,6 +2,16 @@ const mongoose = require('mongoose');
 
 // user schema
 const UserSchema = new mongoose.Schema({
+     //   First name field
+     firstname:{
+      type:String,
+      required:true
+    },
+     //   Last Name field
+    lastname:{
+      type:String,
+      required:true
+    },
     // email field
     email: {
       type: String,

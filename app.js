@@ -1,11 +1,9 @@
 const express = require("express");
-const path = require('path');
-const hbs = require('hbs');
 const app = express();
 
 const bodyParser = require("body-parser");
 
-const auth = require("./auth");
+const auth = require("./middleware/auth");
 
 var productsRouter = require('./routes/products');
 var usersRouter = require('./routes/users');
