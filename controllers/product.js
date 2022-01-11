@@ -118,16 +118,36 @@ exports.product_details = (req, res) => {
 // update a product  by the id.
 exports.product_update = (req, res) => {
     // validate request
-    if(!req.body.name || !req.body.price) {
+    // if(!req.body.name || !req.body.price) {
+    //     return res.status(400).send({
+    //         success: false,
+    //         message: "Please enter product name and price"
+    //     });
+    // }
+  
+    if(Object.keys(req.body).length === 0 && req.body.constructor === Object) {
         return res.status(400).send({
             success: false,
-            message: "Please enter product name and price"
+            message: "Please add data to update6."
         });
     }
+  let productPictures = [];
+ if(req.files.length > 0){
+    
+
+    if (req.files.length > 0) {
+        productPictures = req.files.map((file) => {
+        return { img: file.filename };
+        });
+    }
+ }
+
+ req.body.productPictures = productPictures;
 
     // find product and update
     Product.findByIdAndUpdate(req.params.id, {
         $set: req.body
+      
     }, {new: true})
         .then(data => {
             if(!data) {

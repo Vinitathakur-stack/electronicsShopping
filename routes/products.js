@@ -23,7 +23,7 @@ router.get('/', product_controller.all_products);
 //router.post('/create',product_controller.isLoggedIn,product_controller.uploadImg, product_controller.product_create);
 router.post('/create' , upload_controller.upload.array('productPictures'), product_controller.product_create);
 router.get('/:id', product_controller.product_details);
-router.put('/update/:id', product_controller.product_update);
+router.post('/update/:id', upload_controller.upload.array('productPictures'),  product_controller.product_update);
 router.delete('/delete/:id', product_controller.product_delete);
 
 router.post("/cart", product_controller.product_addTocart);
