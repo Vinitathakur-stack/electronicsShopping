@@ -32,6 +32,7 @@ Product.findOne({ name: req.body.name }, (err, data) => {
                 name: req.body.name,
                 price: req.body.price,
                 productPictures:productPictures,
+                description:req.body.description,
                 //postid:req.body.postid,
                 //image: req.file.path,
             }

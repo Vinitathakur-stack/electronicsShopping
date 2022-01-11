@@ -3,7 +3,7 @@ const app = express();
 
 const bodyParser = require("body-parser");
 
-const auth = require("./middleware/auth");
+const auth = require("./utils/auth");
 
 var productsRouter = require('./routes/products');
 var usersRouter = require('./routes/users');
