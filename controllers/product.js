@@ -64,13 +64,19 @@ Product.findOne({ name: req.body.name }, (err, data) => {
 })   
     
 };
-
+const getPagination = (page, size) => {
+    const limit = size ? +size : 2;
+    const offset = page ? page * limit : 0;
+  
+    return { limit, offset };
+  };
 // retrieve and return all products.
 exports.all_products = (req, res) => {
-
-   Product.find()
+  //  console.log(req.body);
+    const { limit, offset } = getPagination(req.body.page, req.body.limit);
+    Product.find().sort({_id:1}).skip(offset).limit(limit)
     .then(data => {
-           
+      
             var message = "";
             if (data === undefined || data.length == 0) message = "No product found!";
             else message = 'Products successfully retrieved';
