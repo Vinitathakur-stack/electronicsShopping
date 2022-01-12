@@ -19,12 +19,14 @@ Product.findOne({ name: req.body.name }, (err, data) => {
     //if product not in db, add it
     if (!data) {
         let productPictures = [];
-
-        if (req.files.length > 0) {
-            productPictures = req.files.map((file) => {
-            return { img: file.filename };
-            });
-        }
+            if(req.files){
+            if (req.files.length > 0) {
+                        productPictures = req.files.map((file) => {
+                        return { img: file.filename };
+                        });
+                    }
+            }
+      
         //create a new product object using the Product model and req.body
       
         let product = new Product(
