@@ -65,7 +65,7 @@ Product.findOne({ name: req.body.name }, (err, data) => {
     
 };
 const getPagination = (page, size) => {
-    const limit = size ? +size : 2;
+    const limit = size ? +size : 100;
     const offset = page ? page * limit : 0;
   
     return { limit, offset };
