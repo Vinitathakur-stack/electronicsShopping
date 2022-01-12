@@ -133,16 +133,15 @@ exports.product_update = (req, res) => {
             message: "Please add data to update6."
         });
     }
-  let productPictures = [];
- if(req.files.length > 0){
-    
-
-    if (req.files.length > 0) {
-        productPictures = req.files.map((file) => {
-        return { img: file.filename };
-        });
+    let productPictures = [];
+    if(req.files){
+        
+        if (req.files.length > 0) {
+            productPictures = req.files.map((file) => {
+            return { img: file.filename };
+            });
+        }
     }
- }
 
  req.body.productPictures = productPictures;
 
