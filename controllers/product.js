@@ -1,5 +1,6 @@
 // include product model
 const Product = require('../model/product');
+//const cart = require('../model/product');
 
 // create a new Product.
 exports.product_create = function (req, res) {
@@ -73,9 +74,14 @@ const getPagination = (page, size) => {
 // retrieve and return all products.
 exports.all_products = (req, res) => {
   //  console.log(req.body);
+var total_count="";
+   // Count the total documents
+   Product.countDocuments().then((count_documents) => {
+    total_count = count_documents;
     const { limit, offset } = getPagination(req.body.page, req.body.limit);
     Product.find().sort({_id:1}).skip(offset).limit(limit)
     .then(data => {
+      
       
             var message = "";
             if (data === undefined || data.length == 0) message = "No product found!";
@@ -84,7 +90,9 @@ exports.all_products = (req, res) => {
             res.send({
                 success: true,
                 message: message,
-                data: data
+                data: data,
+                total_row:data.length,
+                total_count:total_count
             });
         }).catch(err => {
         res.status(500).send({
@@ -92,6 +100,15 @@ exports.all_products = (req, res) => {
             message: err.message || "Some error occurred while retrieving products."
         });
     });
+  }).catch((err) => {
+    console.log(err.Message);
+    res.status(500).send({
+        success: false,
+        message: err.message || "Some error occurred while retrieving products."
+    });
+  })
+      
+
 };
 
 // find a single product with a id.
@@ -212,37 +229,73 @@ exports.product_delete = (req, res) => {
 
 // Add to cart a product with the specified id.
 exports.product_addTocart =  async (req, res) => {
-    const { productId, quantity, name, price } = req.body;
-  
-    const userId = "5de7ffa74fff640a0491bc4f"; //TODO: the logged in user id
-  
+    const { productId, name, price } = req.body;
+    var userId="";
+    var quantity = 9;
+    //const userId = "5de7ffa74fff640a0491bc4f"; //TODO: the logged in user id
+    const ipAddress = "127.0. 0.1";
     try {
-      let cart = await Product.findOne({ userId });
+        if(userId){
+            let cart = await Product.findOne({ userId });
   
-      if (cart) {
-        //cart exists for user
-        let itemIndex = cart.products.findIndex(p => p.productId == productId);
+            if (cart) {
+                //cart exists for user
+                let itemIndex = cart.products.findIndex(p => p.productId == productId);
+        
+                if (itemIndex > -1) {
+                //product exists in the cart, update the quantity
+                let productItem = cart.products[itemIndex];
+                productItem.quantity = quantity;
+                cart.products[itemIndex] = productItem;
+                } else {
+                //product does not exists in cart, add new item
+                cart.products.push({ productId, quantity, name, price });
+                }
+                cart = await cart.save();
+                return res.status(201).send(cart);
+            } else {
+                
+                //no cart for user, create new cart
+                const newCart = await Product.create({
+                userId,
+                products: [{ productId, quantity, name, price }]
+                });
+        
+                return res.status(201).send(newCart);
+            }
+        }else{
+            console.log("no user");
+            let cart = await Product.findOne({ ipAddress });
   
-        if (itemIndex > -1) {
-          //product exists in the cart, update the quantity
-          let productItem = cart.products[itemIndex];
-          productItem.quantity = quantity;
-          cart.products[itemIndex] = productItem;
-        } else {
-          //product does not exists in cart, add new item
-          cart.products.push({ productId, quantity, name, price });
+            if (cart) {
+                //cart exists for user
+                let itemIndex = cart.products.findIndex(p => p.productId == productId);
+        
+                if (itemIndex > -1) {
+                //product exists in the cart, update the quantity
+                let productItem = cart.products[itemIndex];
+                productItem.quantity = quantity;
+                cart.products[itemIndex] = productItem;
+                } else {
+                //product does not exists in cart, add new item
+                cart.products.push({ productId, quantity, name, price });
+                }
+                cart = await cart.save();
+                return res.status(201).send(cart);
+            } else {
+                
+                //no cart for user, create new cart
+                const newCart = await Product.create({
+                userId,
+                ipAddress,
+                products: [{ productId, quantity, name, price }]
+                });
+        
+                return res.status(201).send(newCart);
+            }
+            
         }
-        cart = await cart.save();
-        return res.status(201).send(cart);
-      } else {
-        //no cart for user, create new cart
-        const newCart = await Product.create({
-          userId,
-          products: [{ productId, quantity, name, price }]
-        });
-  
-        return res.status(201).send(newCart);
-      }
+      
     } catch (err) {
       console.log(err);
       res.status(500).send("Something went wrong");
