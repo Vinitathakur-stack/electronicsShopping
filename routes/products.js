@@ -19,7 +19,7 @@ const product_controller = require('../controllers/product');
 // const upload = multer({ storage: storage });
 
 // routes
-router.get('/', product_controller.all_products);
+router.post('/', product_controller.all_products);
 //router.post('/create',product_controller.isLoggedIn,product_controller.uploadImg, product_controller.product_create);
 router.post('/create' , upload_controller.upload.array('productPictures'), product_controller.product_create);
 router.get('/:id', product_controller.product_details);
