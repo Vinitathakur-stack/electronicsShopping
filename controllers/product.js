@@ -1,6 +1,6 @@
 // include product model
 const Product = require('../model/product');
-//const cart = require('../model/product');
+const Cart = require('../model/cart');
 
 // create a new Product.
 exports.product_create = function (req, res) {
@@ -229,72 +229,35 @@ exports.product_delete = (req, res) => {
 
 // Add to cart a product with the specified id.
 exports.product_addTocart =  async (req, res) => {
-    const { productId, name, price } = req.body;
-    var userId="";
-    var quantity = 9;
-    //const userId = "5de7ffa74fff640a0491bc4f"; //TODO: the logged in user id
-    const ipAddress = "127.0. 0.1";
+    const { userId,productId, name, price,quantity } = req.body;
     try {
-        if(userId){
-            let cart = await Product.findOne({ userId });
-  
+        let cart = await Cart.findOne({ userId });
+       
             if (cart) {
-                //cart exists for user
-                let itemIndex = cart.products.findIndex(p => p.productId == productId);
-        
+                      //cart exists for user
+                      let itemIndex = cart.products.findIndex(p => p.productId == productId);
+              
                 if (itemIndex > -1) {
-                //product exists in the cart, update the quantity
-                let productItem = cart.products[itemIndex];
-                productItem.quantity = quantity;
-                cart.products[itemIndex] = productItem;
+                      //product exists in the cart, update the quantity
+                      let productItem = cart.products[itemIndex];
+                      productItem.quantity = quantity;
+                      cart.products[itemIndex] = productItem;
                 } else {
-                //product does not exists in cart, add new item
-                cart.products.push({ productId, quantity, name, price });
+                      //product does not exists in cart, add new item
+                      cart.products.push({ productId, quantity, name, price });
                 }
-                cart = await cart.save();
-                return res.status(201).send(cart);
-            } else {
-                
-                //no cart for user, create new cart
-                const newCart = await Product.create({
-                userId,
-                products: [{ productId, quantity, name, price }]
-                });
-        
-                return res.status(201).send(newCart);
+                      cart = await cart.save();
+                      return res.status(201).send(cart);
+            }else {
+                      
+                      //no cart for user, create new cart
+                      const newCart = await Cart.create({
+                      userId,
+                      products: [{ productId, quantity, name, price }]
+                      });
+              
+                      return res.status(201).send(newCart);
             }
-        }else{
-            console.log("no user");
-            let cart = await Product.findOne({ ipAddress });
-  
-            if (cart) {
-                //cart exists for user
-                let itemIndex = cart.products.findIndex(p => p.productId == productId);
-        
-                if (itemIndex > -1) {
-                //product exists in the cart, update the quantity
-                let productItem = cart.products[itemIndex];
-                productItem.quantity = quantity;
-                cart.products[itemIndex] = productItem;
-                } else {
-                //product does not exists in cart, add new item
-                cart.products.push({ productId, quantity, name, price });
-                }
-                cart = await cart.save();
-                return res.status(201).send(cart);
-            } else {
-                
-                //no cart for user, create new cart
-                const newCart = await Product.create({
-                userId,
-                ipAddress,
-                products: [{ productId, quantity, name, price }]
-                });
-        
-                return res.status(201).send(newCart);
-            }
-            
-        }
       
     } catch (err) {
       console.log(err);
