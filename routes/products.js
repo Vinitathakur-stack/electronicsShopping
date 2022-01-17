@@ -27,5 +27,6 @@ router.post('/update/:id', upload_controller.upload.array('productPictures'),  p
 router.delete('/delete/:id', product_controller.product_delete);
 
 router.post("/cart", product_controller.product_addTocart);
+router.get("/view_cart/:id", product_controller.product_cart);
 
 module.exports = router;

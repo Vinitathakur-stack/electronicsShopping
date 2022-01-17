@@ -73,7 +73,7 @@ const getPagination = (page, size) => {
   };
 // retrieve and return all products.
 exports.all_products = (req, res) => {
-  //  console.log(req.body);
+ 
 var total_count="";
    // Count the total documents
    Product.countDocuments().then((count_documents) => {
@@ -235,7 +235,8 @@ exports.product_addTocart =  async (req, res) => {
        
             if (cart) {
                       //cart exists for user
-                      let itemIndex = cart.products.findIndex(p => p.productId == productId);
+                      
+                let itemIndex = cart.products.findIndex(p => p.productId == productId);
               
                 if (itemIndex > -1) {
                       //product exists in the cart, update the quantity
@@ -264,3 +265,33 @@ exports.product_addTocart =  async (req, res) => {
       res.status(500).send("Something went wrong");
     }
   }
+
+  // retrieve and return all products in cart.
+exports.product_cart = (req, res) => {
+    Cart.findById(req.params.id)
+        .then(data => {
+          
+          
+                var message = "";
+                if (data === undefined || data.length == 0) message = "No cart found!";
+                else message = 'Cart Products successfully retrieved';
+    
+                res.send({
+                    success: true,
+                    message: message,
+                    data: data
+                });
+            }).catch(err => {
+            res.status(500).send({
+                success: false,
+                message: err.message || "Some error occurred while retrieving cart."
+            });
+       
+      }).catch((err) => {
+        console.log(err.Message);
+        res.status(500).send({
+            success: false,
+            message: err.message || "Some error occurred while retrieving cart."
+        });
+      })
+};
